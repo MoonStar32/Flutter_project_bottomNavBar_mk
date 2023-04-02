@@ -1,61 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
-void main() {
-  runApp(const MaterialApp(
-    home: SunPage(),
-  ));
+void main() => runApp(MaterialApp(home: BottomNavBar()));
+
+class BottomNavBar extends StatefulWidget {
+  @override
+  _BottomNavBarState createState() => _BottomNavBarState();
 }
 
-class SunPage extends StatefulWidget{
-  const SunPage({super.key});
-
-  @override 
-  State<SunPage> createState() => SunPageState();
-}
-
-class SunPageState extends State<SunPage> {
-  double sunState = 0;
-
-  getColor() {
-    if (sunState < 33){
-      return Colors.blue[200];
-    } else if (sunState < 66){
-      return Colors.deepOrange[300];
-    } else {
-      return Colors.purple[700];
-    }
-  }
-
-  @override 
+class _BottomNavBarState extends State<BottomNavBar> {
+  int _page = 0;
+  GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnimatedContainer(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        duration: const Duration(milliseconds: 500),
-        color: getColor(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              margin: EdgeInsets.only(top: 50 + sunState *4),
-              decoration: BoxDecoration(
-                color: Colors.yellow[700],
-                borderRadius: BorderRadius.circular(25)
-              ),
-            ),
-            Slider(
-              value: sunState,
-              max: 100,
-              activeColor: Colors.black,
-              inactiveColor: Colors.white,
-              onChanged: (value) => setState(() => sunState = value),
-            ),
-          ],
-        )
-      )
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+      ),
+      drawer: Drawer(
+        child: Center(child: Text("Page")),
+      ),
+      bottomNavigationBar: CurvedNavigationBar(
+        key: _bottomNavigationKey,
+        index: 0,
+        height: 60.0,
+        items: <Widget>[
+          Icon(Icons.list, size: 30),
+          Icon(Icons.add, size: 30),
+          Icon(Icons.perm_identity, size: 30),
+        ],
+        color: Colors.white,
+        buttonBackgroundColor: Colors.white,
+        backgroundColor: Colors.blueAccent,
+        animationCurve: Curves.easeInOut,
+        animationDuration: Duration(milliseconds: 500),
+        onTap: (index) {
+          setState(() {
+            _page = index;
+          });
+        },
+        letIndexChange: (index) => true,
+      ),
+      body: Container(
+        color: Colors.blueAccent,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(_page.toString(), textScaleFactor: 25.0),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
